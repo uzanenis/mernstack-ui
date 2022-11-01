@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import {Link} from "react-router-dom";
 import Box from "@mui/material/Box";
 
-const Signin = () => {
+const Signup = () => {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState({
@@ -45,7 +45,7 @@ const Signin = () => {
     return (
         <div>
             <Box component="form" my={4} sx={{ display: "flex", flexDirection: "column", justifyContent:'center', alignItems:'center' }}>
-                <Grid container spacing={2}>
+                <Grid direction="column" container>
                     <Grid item md={6}>
                         <TextField
                             error={error.isError}
@@ -56,20 +56,25 @@ const Signin = () => {
                             required={true}
                             onChange={handeValidationUsername}
                             helperText={error.usernameError}
+                            fullWidth
                         />
                     </Grid>
-                    <TextField
-                        error={error.isError}
-                        color={error.isError ? "" : "success"}
-                        required={true}
-                        onChange={handeValidationPassword}
-                        helperText={error.passwordError}
-                        name='password'
-                        label='Password'
-                        type="password"
-                        variant="outlined"
-                        sx={{ my:2 }}
-                    />
+                    <Grid item md={6}>
+                        <TextField
+                            error={error.isError}
+                            color={error.isError ? "" : "success"}
+                            required={true}
+                            onChange={handeValidationPassword}
+                            helperText={error.passwordError}
+                            name='password'
+                            label='Password'
+                            type="password"
+                            variant="outlined"
+                            fullWidth
+                            sx={{ my:2 }}
+                        />
+                    </Grid>
+
                     <Button variant="contained" type="submit" sx={{ mt:2 }}>
                         Create Account
                     </Button>
@@ -83,4 +88,4 @@ const Signin = () => {
     );
 };
 
-export default Signin;
+export default Signup;
