@@ -1,77 +1,102 @@
 import React, {useState} from 'react';
 import {Grid, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import Box from "@mui/material/Box";
+import {signup} from "../axios";
 
 const Signup = () => {
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
-    const [error, setError] = useState({
-        isError: false,
-        usernameError: "",
-        passwordError: ""
+    const navigate = useNavigate()
+    const [formData, setFormData] = useState({
+        fullName: "",
+        password: "",
+        phoneNumber: "",
+        email: ""
     })
-    const handeValidationUsername = (e) => {
-        setUsername(e.target.value)
-        if(username.length < 3){
-            setError({
-                isError: true,
-                usernameError: "Username Error"
-            })
-        }
-        else{
-            setError({
-                isError: false
-            })
-        }
-    }
-
-    const handeValidationPassword = (e) => {
-        setPassword(e.target.value)
-        if(password.length < 6){
-            setError({
-                isError: true,
-                passwordError: "Password Error"
-            })
-        }
-        else{
-            setError({
-                isError: false
-            })
-
-        }
-    }
     return (
         <div>
-            <Box component="form" my={4} sx={{ display: "flex", flexDirection: "column", justifyContent:'center', alignItems:'center' }}>
+            <Box component="form" onSubmit={(e) => {
+                e.preventDefault()
+                signup(formData).then((response) => {
+                    if(response.status === 201){
+                        navigate('/signin')
+                    }
+                }).catch(err => console.log(err))
+
+            }} my={4} sx={{ display: "flex", flexDirection: "column", justifyContent:'center', alignItems:'center' }}>
                 <Grid direction="column" container>
-                    <Grid item md={6}>
+                    <Grid item my={2} md={6}>
                         <TextField
-                            error={error.isError}
-                            color={error.isError ? "" : "success"}
-                            name='username'
-                            label='Username'
+                            name='fullName'
+                            label='Full Name'
                             variant="outlined"
+                            type="name"
                             required={true}
-                            onChange={handeValidationUsername}
-                            helperText={error.usernameError}
                             fullWidth
+                            onChange={(e) => {
+                                setFormData({
+                                    ...formData,
+                                    fullName: e.target.value
+                                })
+                            }}
                         />
                     </Grid>
-                    <Grid item md={6}>
+                    <Grid item my={2} md={6}>
                         <TextField
-                            error={error.isError}
-                            color={error.isError ? "" : "success"}
+                            name='email'
+                            label='E-Mail'
+                            variant="outlined"
+                            type="email"
                             required={true}
-                            onChange={handeValidationPassword}
-                            helperText={error.passwordError}
+                            fullWidth
+                            onChange={(e) => {
+                                setFormData({
+                                    ...formData,
+                                    email: e.target.value
+                                })
+                            }}
+                        />
+                    </Grid>
+                    <Grid item my={2} md={6}>
+                        <TextField
+                            name='phoneNumber'
+                            label='Phone Number'
+                            variant="outlined"
+                            type="number"
+                            required={true}
+                            fullWidth
+                            onChange={(e) => {
+                                setFormData({
+                                    ...formData,
+                                    phoneNumber: e.target.value
+                                })
+                            }}
+                        />
+                    </Grid>
+                    <Grid item my={2} md={6}>
+                        <TextField
                             name='password'
                             label='Password'
-                            type="password"
                             variant="outlined"
+                            type="password"
+                            required={true}
                             fullWidth
-                            sx={{ my:2 }}
+                            onChange={(e) => {
+                                setFormData({
+                                    ...formData,
+                                    password: e.target.value
+                                })
+                            }}
+                        />
+                    </Grid>
+                    <Grid item my={2} md={6}>
+                        <TextField
+                            name='passwordAgain'
+                            label='Password Again'
+                            variant="outlined"
+                            type="password"
+                            required={true}
+                            fullWidth
                         />
                     </Grid>
 

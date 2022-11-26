@@ -2,19 +2,23 @@ import React, {useState} from 'react';
 import {TextField} from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import { login } from "../axios";
 
-const Login = () => {
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
+const Login = ({ setUser }) => {
+    const navigate = useNavigate()
+    const [formData, setFormData] = useState({
+        email: "",
+        password: ""
+    })
     const [error, setError] = useState({
         isError: false,
         usernameError: "",
         passwordError: ""
     })
+
     const handeValidationUsername = (e) => {
-        setUsername(e.target.value)
-        if(username.length < 3){
+        if(formData.email.length < 3){
             setError({
                 isError: true,
                 usernameError: "Username Error"
@@ -26,10 +30,8 @@ const Login = () => {
             })
         }
     }
-
     const handeValidationPassword = (e) => {
-        setPassword(e.target.value)
-        if(password.length < 6){
+        if(formData.password.length < 5){
             setError({
                 isError: true,
                 passwordError: "Password Error"
@@ -45,7 +47,18 @@ const Login = () => {
 
     return (
         <div>
-            <Box component="form" my={4} sx={{ display: "flex", flexDirection: "column", justifyContent:'center', alignItems:'center' }}>
+            <Box component="form" onSubmit={(e) => {
+                e.preventDefault()
+                login(formData).then((response) => {
+                    if(response.status === 200){
+                        localStorage.setItem('user', JSON.stringify(response.data.user))
+                        setUser(response.data.user)
+                        navigate('/')
+                    }
+                }).catch((err) => {
+                    console.log(err)
+                })
+            }} my={4} sx={{ display: "flex", flexDirection: "column", justifyContent:'center', alignItems:'center' }}>
                 <TextField
                     error={error.isError}
                     color={error.isError ? "" : "success"}
@@ -53,14 +66,27 @@ const Login = () => {
                     label='Username'
                     variant="outlined"
                     required={true}
-                    onChange={handeValidationUsername}
+                    onChange={(e) => {
+                        setFormData({
+                            ...formData,
+                            email: e.target.value
+                        })
+                        handeValidationUsername(e);
+                    }}
                     helperText={error.usernameError}
                 />
                 <TextField
                     error={error.isError}
                     color={error.isError ? "" : "success"}
                     required={true}
-                    onChange={handeValidationPassword}
+                    onChange={(e) => {
+                        handeValidationPassword(e);
+                        setFormData({
+                            ...formData,
+                            password: e.target.value
+                        })
+
+                    }}
                     helperText={error.passwordError}
                     name='password'
                     label='Password'

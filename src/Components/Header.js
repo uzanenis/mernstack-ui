@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Link} from 'react-router-dom'
 import Button from '@mui/material/Button';
 import AppBar from '@mui/material/AppBar';
@@ -9,7 +9,12 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import {Container} from "@mui/material";
 
-const Header = () => {
+const Header = ({ user, setUser }) => {
+    useEffect(() => {
+        if(localStorage.getItem('user') && !user){
+            setUser(JSON.parse(localStorage.getItem('user')))
+        }
+    }, [user])
     return (
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static">
@@ -37,9 +42,21 @@ const Header = () => {
                         }}>
                             MERN
                         </Typography>
-                        <Button variant="contained" color="primary" sx={{}}>
-                            <Link to="/signin" style={{ textDecoration: 'none', color: 'white' }}>Sign In</Link>
-                        </Button>
+                        {
+                            user
+                                ?
+                                <Button variant="contained" color="primary" sx={{}} onClick={(e) => {
+                                    localStorage.removeItem('user')
+                                    setUser(null)
+                                }}>
+                                    Çıkış Yap
+                                </Button>
+                                :
+                                <Button variant="contained" color="primary" sx={{}}>
+                                    <Link to="/signin" style={{ textDecoration: 'none', color: 'white' }}>Sign In</Link>
+                                </Button>
+
+                        }
                     </Toolbar>
                 </Container>
             </AppBar>
